@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import { Bucket, PartitionDateSource, TargetObjectKeyFormat } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
@@ -6,11 +7,23 @@ export class AccesslogPartitionStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    // アクセスログバケット名
+    const accessLogBucketName: string = "bucket-for-accesslog-test";
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'AccesslogPartitionQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    // アクセスログを有効化するバケット
+    const bucketName: string = "bucket-for-partition-test";
+
+    // アクセスログを保存するバケット
+    const accessLogBucket: Bucket = new Bucket(this, accessLogBucketName, {
+      bucketName: accessLogBucketName,
+    });
+
+    // アクセスログを有効化するバケット
+    const bucket: Bucket = new Bucket(this, bucketName, {
+      bucketName: bucketName,
+      serverAccessLogsBucket: accessLogBucket,
+      // 日付ベースのパーティションを有効化する際は、partitionedPrefixにPartitionDateSource.EVENT_TIMEを指定
+      targetObjectKeyFormat: TargetObjectKeyFormat.partitionedPrefix(PartitionDateSource.EVENT_TIME),
+    });
   }
 }
