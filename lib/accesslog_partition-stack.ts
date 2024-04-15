@@ -1,7 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Bucket, PartitionDateSource, TargetObjectKeyFormat } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class AccesslogPartitionStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
